@@ -14,8 +14,10 @@ import {
   ArrowRight,
   Sparkles
 } from 'lucide-react';
+import { useTranslation } from '../context/LanguageContext';
 
 export function OnChainAnalytics(): JSX.Element {
+  const { t } = useTranslation();
   // Halving Stats
   const currentBlockHeight = 862410;
   const nextHalvingBlock = 1050000;
@@ -75,7 +77,7 @@ export function OnChainAnalytics(): JSX.Element {
               <div className="p-2 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20">
                 <Clock className="w-5 h-5" />
               </div>
-              <h3 className="text-base font-extrabold text-white">Próximo Bitcoin Halving</h3>
+              <h3 className="text-base font-extrabold text-white">{t('halvingCountdown')}</h3>
             </div>
             <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
               5º Halving (~2028)

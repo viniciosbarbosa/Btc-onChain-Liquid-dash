@@ -10,14 +10,30 @@ export async function getWithFallback<T>(
   options: AxiosRequestConfig = {}
 ): Promise<ApiResponse<T>> {
   const config = getNodeConfig();
-  
+  const isDev = import.meta.env.DEV;
+
   // Format Tor .onion API URL or local endpoint
   const onionBase = formatOnionUrl(config.umbrelApiUrl, config.torGatewayMode);
   const primaryUrl = `${onionBase.replace(/\/$/, '')}${endpoint}`;
   const fallbackBase = config.btcPublicApi.replace(/\/$/, '');
 
-  // 1. Try Custom Node / Tor .onion API via Axios
-  try {
+  let publicEndpoint = endpoint;
+  if (endpoint === '/mempool/fees') publicEndpoint = '/v1/fees/recommended';
+  if (endpoint === '/blocks/tip') publicEndpoint = '/blocks/tip/height';
+  if (endpoint === '/price') publicEndpoint = '/v1/prices';
+
+  const fetchPublic = async (): Promise<ApiResponse<T>> => {
+    const res = await axios.get<T>(`${fallbackBase}${publicEndpoint}`, {
+      timeout: 5000,
+      headers: { 'Accept': 'application/json' }
+    });
+    if (res.status === 200 && res.data !== undefined && res.data !== null) {
+      return { data: res.data, source: 'public' };
+    }
+    throw new Error('Public API empty response');
+  };
+
+  const fetchPrimary = async (): Promise<ApiResponse<T>> => {
     const res = await axios.get<T>(primaryUrl, {
       timeout: 4000,
       headers: {
@@ -26,31 +42,35 @@ export async function getWithFallback<T>(
       },
       ...options
     });
-
-    if (res.status === 200 && res.data) {
+    if (res.status === 200 && res.data !== undefined && res.data !== null) {
       return { data: res.data, source: 'umbrel' };
     }
-  } catch (err) {
-    // Silent fallback to public API
-  }
+    throw new Error('Primary node empty response');
+  };
 
-  // 2. Fallback to Mempool.space / Public REST API via Axios
-  try {
-    let publicEndpoint = endpoint;
-    if (endpoint === '/mempool/fees') publicEndpoint = '/v1/fees/recommended';
-    if (endpoint === '/blocks/tip') publicEndpoint = '/blocks/tip/height';
-    if (endpoint === '/price') publicEndpoint = '/v1/prices';
-
-    const res = await axios.get<T>(`${fallbackBase}${publicEndpoint}`, {
-      timeout: 5000,
-      headers: { 'Accept': 'application/json' }
-    });
-
-    if (res.status === 200 && res.data) {
-      return { data: res.data, source: 'public' };
+  // In non-dev environment, prioritize 3rd-party public API (mempool.space) directly
+  if (!isDev) {
+    try {
+      return await fetchPublic();
+    } catch (pubErr) {
+      // Fallback to custom node URL if public fails
+      try {
+        return await fetchPrimary();
+      } catch (primErr) {
+        console.warn(`Both public and primary fetches failed for ${endpoint}:`, pubErr, primErr);
+      }
     }
-  } catch (fallbackErr) {
-    console.warn(`Axios fallback fetch failed for ${endpoint}:`, fallbackErr);
+  } else {
+    // In dev environment, try custom node / Tor gateway first, then fallback to public API
+    try {
+      return await fetchPrimary();
+    } catch (primErr) {
+      try {
+        return await fetchPublic();
+      } catch (pubErr) {
+        console.warn(`Both primary and public fetches failed for ${endpoint}:`, primErr, pubErr);
+      }
+    }
   }
 
   throw new Error(`Axios: Unable to fetch ${endpoint} from node or public fallback.`);
@@ -65,11 +85,23 @@ export async function postWithFallback<T>(
   options: AxiosRequestConfig = {}
 ): Promise<ApiResponse<T>> {
   const config = getNodeConfig();
+  const isDev = import.meta.env.DEV;
   const onionBase = formatOnionUrl(config.umbrelApiUrl, config.torGatewayMode);
   const primaryUrl = `${onionBase.replace(/\/$/, '')}${endpoint}`;
   const fallbackBase = config.btcPublicApi.replace(/\/$/, '');
 
-  try {
+  const postPublic = async (): Promise<ApiResponse<T>> => {
+    const res = await axios.post<T>(`${fallbackBase}${endpoint}`, data, {
+      timeout: 8000,
+      headers: { 'Content-Type': 'text/plain' }
+    });
+    if (res.status === 200 && res.data) {
+      return { data: res.data, source: 'public' };
+    }
+    throw new Error('Public broadcast failed');
+  };
+
+  const postPrimary = async (): Promise<ApiResponse<T>> => {
     const res = await axios.post<T>(primaryUrl, data, {
       timeout: 8000,
       headers: { 'Content-Type': 'text/plain', ...(options.headers || {}) },
@@ -78,20 +110,29 @@ export async function postWithFallback<T>(
     if (res.status === 200 && res.data) {
       return { data: res.data, source: 'umbrel' };
     }
-  } catch (err) {
-    // Fallback to public node broadcast
-  }
+    throw new Error('Primary broadcast failed');
+  };
 
-  try {
-    const res = await axios.post<T>(`${fallbackBase}${endpoint}`, data, {
-      timeout: 8000,
-      headers: { 'Content-Type': 'text/plain' }
-    });
-    if (res.status === 200 && res.data) {
-      return { data: res.data, source: 'public' };
+  if (!isDev) {
+    try {
+      return await postPublic();
+    } catch (pubErr) {
+      try {
+        return await postPrimary();
+      } catch (primErr) {
+        console.warn('POST failed on both endpoints:', pubErr, primErr);
+      }
     }
-  } catch (fallbackErr) {
-    console.warn(`Axios fallback POST failed for ${endpoint}:`, fallbackErr);
+  } else {
+    try {
+      return await postPrimary();
+    } catch (primErr) {
+      try {
+        return await postPublic();
+      } catch (pubErr) {
+        console.warn('POST failed on both endpoints:', primErr, pubErr);
+      }
+    }
   }
 
   throw new Error(`Axios: Transmissão da transação falhou no nó local e no nó público.`);

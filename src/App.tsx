@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, useParams, Link } from 'react-router-dom';
 import { NetworkProvider, useNetwork } from './context/NetworkContext';
 import { NodeProvider } from './context/NodeContext';
-import { LanguageProvider } from './context/LanguageContext';
+import { LanguageProvider, useTranslation } from './context/LanguageContext';
 import { Navbar } from './components/Navbar';
 import { NodeConfigModal } from './components/NodeConfigModal';
 import { MetricsBar } from './components/MetricsBar';
@@ -22,6 +22,7 @@ import { ArrowLeft } from 'lucide-react';
 function TxRoute(): JSX.Element | null {
   const { txid } = useParams<{ txid: string }>();
   const { network } = useNetwork();
+  const { t } = useTranslation();
   if (!txid) return null;
 
   return (
@@ -31,7 +32,7 @@ function TxRoute(): JSX.Element | null {
           to="/"
           className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-slate-400 hover:text-white bg-slate-900 rounded-xl border border-slate-800 transition"
         >
-          <ArrowLeft className="w-4 h-4" /> Voltar ao Dashboard
+          <ArrowLeft className="w-4 h-4" /> {t('backToDashboard')}
         </Link>
       </div>
       {network === 'liquid' || txid.startsWith('liq_') ? (
@@ -45,6 +46,7 @@ function TxRoute(): JSX.Element | null {
 
 function AddressRoute(): JSX.Element | null {
   const { address } = useParams<{ address: string }>();
+  const { t } = useTranslation();
   if (!address) return null;
   return (
     <div className="space-y-4">
@@ -52,7 +54,7 @@ function AddressRoute(): JSX.Element | null {
         to="/"
         className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-slate-400 hover:text-white bg-slate-900 rounded-xl border border-slate-800 transition"
       >
-        <ArrowLeft className="w-4 h-4" /> Voltar ao Dashboard
+        <ArrowLeft className="w-4 h-4" /> {t('backToDashboard')}
       </Link>
       <AddressView address={address} />
     </div>
@@ -61,6 +63,7 @@ function AddressRoute(): JSX.Element | null {
 
 function XpubRoute(): JSX.Element | null {
   const { xpub } = useParams<{ xpub: string }>();
+  const { t } = useTranslation();
   if (!xpub) return null;
   return (
     <div className="space-y-4">
@@ -68,7 +71,7 @@ function XpubRoute(): JSX.Element | null {
         to="/"
         className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-slate-400 hover:text-white bg-slate-900 rounded-xl border border-slate-800 transition"
       >
-        <ArrowLeft className="w-4 h-4" /> Voltar ao Dashboard
+        <ArrowLeft className="w-4 h-4" /> {t('backToDashboard')}
       </Link>
       <XpubView xpub={xpub} />
     </div>
@@ -77,6 +80,7 @@ function XpubRoute(): JSX.Element | null {
 
 function AssetRoute(): JSX.Element | null {
   const { assetId } = useParams<{ assetId: string }>();
+  const { t } = useTranslation();
   if (!assetId) return null;
   return (
     <div className="space-y-4">
@@ -84,7 +88,7 @@ function AssetRoute(): JSX.Element | null {
         to="/liquid"
         className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-slate-400 hover:text-white bg-slate-900 rounded-xl border border-slate-800 transition"
       >
-        <ArrowLeft className="w-4 h-4" /> Voltar ao Painel Liquid
+        <ArrowLeft className="w-4 h-4" /> {t('backToLiquid')}
       </Link>
       <LiquidAssetView assetId={assetId} />
     </div>
@@ -93,6 +97,7 @@ function AssetRoute(): JSX.Element | null {
 
 function DashboardPage(): JSX.Element {
   const [subTab, setSubTab] = React.useState<'mempool' | 'analytics' | 'quotes'>('mempool');
+  const { t } = useTranslation();
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -109,7 +114,7 @@ function DashboardPage(): JSX.Element {
                 : 'text-slate-400 hover:text-white hover:bg-slate-900'
             }`}
           >
-            ⚡ Fluxo Mempool Live
+            {t('mempoolTab')}
           </button>
           <button
             onClick={() => setSubTab('analytics')}
@@ -119,7 +124,7 @@ function DashboardPage(): JSX.Element {
                 : 'text-slate-400 hover:text-white hover:bg-slate-900'
             }`}
           >
-            📊 Analytics & Halving Clock
+            {t('analyticsTab')}
           </button>
           <button
             onClick={() => setSubTab('quotes')}
@@ -129,7 +134,7 @@ function DashboardPage(): JSX.Element {
                 : 'text-slate-400 hover:text-white hover:bg-slate-900'
             }`}
           >
-            💡 Cotações & Insights
+            {t('quotesTab')}
           </button>
         </div>
       </div>

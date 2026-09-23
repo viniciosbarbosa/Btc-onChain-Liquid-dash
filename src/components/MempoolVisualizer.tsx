@@ -4,12 +4,14 @@ import { explorerService } from '../services/explorerService';
 import { BlockDetailModal } from './BlockDetailModal';
 import { formatBytes, formatTimeAgo, formatSatsToBTC } from '../utils/formatters';
 import { CheckCircle2, Flame, Boxes, Radio, ArrowRight, X, Layers, Cpu } from 'lucide-react';
+import { useTranslation } from '../context/LanguageContext';
 
 interface MempoolVisualizerProps {
   onSelectBlock?: (block: BtcBlock) => void;
 }
 
 export function MempoolVisualizer({ onSelectBlock }: MempoolVisualizerProps): JSX.Element {
+  const { t } = useTranslation();
   const [selectedBlock, setSelectedBlock] = useState<BtcBlock | null>(null);
   const [lastUpdate, setLastUpdate] = useState<number>(Date.now());
   const [isListening, setIsListening] = useState<boolean>(true);
@@ -162,21 +164,21 @@ export function MempoolVisualizer({ onSelectBlock }: MempoolVisualizerProps): JS
           </div>
           <div>
             <h2 className="text-xl font-extrabold text-white flex items-center gap-3">
-              Mempool Live Stream & Fluxo de Blocos
+              {t('mempoolTitle')}
               <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                Ouvindo Blockchain (Live)
+                {t('listeningLive')}
               </span>
             </h2>
             <p className="text-xs text-slate-400 mt-0.5 font-mono">
-              Visualização estilo Mempool.space: Blocos em fila na Mempool (esquerda) & Blocos minerados (direita)
+              {t('mempoolSubtitle')}
             </p>
           </div>
         </div>
 
         {/* Fee Density Color Legend */}
         <div className="flex items-center gap-3 text-[11px] font-mono bg-slate-950/80 px-4 py-2 rounded-xl border border-slate-800">
-          <span className="text-slate-400">Escala sat/vB:</span>
+          <span className="text-slate-400">{t('feeScale')}</span>
           <span className="px-2 py-0.5 rounded bg-blue-600 text-white font-bold">1-5</span>
           <span className="px-2 py-0.5 rounded bg-cyan-500 text-black font-bold">5-15</span>
           <span className="px-2 py-0.5 rounded bg-amber-500 text-black font-bold">15-30</span>
@@ -191,9 +193,8 @@ export function MempoolVisualizer({ onSelectBlock }: MempoolVisualizerProps): JS
         <div className="space-y-4">
           <div className="flex items-center justify-between text-xs font-bold text-slate-300 font-mono">
             <span className="flex items-center gap-2 text-amber-400">
-              <Flame className="w-4 h-4" /> FILA DE BLOCOS NA MEMPOOL (PENDENTES)
+              <Flame className="w-4 h-4" /> {t('pendingQueue')}
             </span>
-            <span className="text-slate-500">Ordenado por Densidade de Taxa</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -246,9 +247,8 @@ export function MempoolVisualizer({ onSelectBlock }: MempoolVisualizerProps): JS
         <div className="space-y-4">
           <div className="flex items-center justify-between text-xs font-bold text-slate-300 font-mono">
             <span className="flex items-center gap-2 text-emerald-400">
-              <CheckCircle2 className="w-4 h-4" /> BLOCOS MINERADOS NA BLOCKCHAIN
+              <CheckCircle2 className="w-4 h-4" /> {t('minedBlocks')}
             </span>
-            <span className="text-slate-500">Cadeia Atual</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

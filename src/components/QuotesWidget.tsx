@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { explorerService } from '../services/explorerService';
 import { Quote, RefreshCw } from 'lucide-react';
+import { useTranslation } from '../context/LanguageContext';
 
 export function QuotesWidget(): JSX.Element {
+  const { t } = useTranslation();
   const [quote, setQuote] = useState<{ quote?: string; text?: string; author: string }>({
     quote: "If you don't believe it or don't get it, I don't have the time to try to convince you, sorry.",
     author: "Satoshi Nakamoto"
@@ -40,9 +42,11 @@ export function QuotesWidget(): JSX.Element {
             <button
               onClick={loadQuote}
               disabled={loading}
-              className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition"
+              title={t('nextQuoteBtn')}
+              className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition flex items-center gap-1.5 text-xs font-mono"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">{t('nextQuoteBtn')}</span>
             </button>
           </div>
         </div>

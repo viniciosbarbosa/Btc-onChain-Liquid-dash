@@ -2,10 +2,12 @@ import React, { useState, FormEvent } from 'react';
 import { useNode } from '../context/NodeContext';
 import { NodeConfig, TorGatewayMode } from '../types';
 import { Server, Shield, CheckCircle, XCircle, RefreshCw, Radio, Globe } from 'lucide-react';
-import { Modal, Button, Input, Badge } from './ui';
+import { Modal, Button, Input } from './ui';
+import { useTranslation } from '../context/LanguageContext';
 
 export function NodeConfigModal(): JSX.Element | null {
   const { nodeConfig, updateConfig, isModalOpen, setIsModalOpen, nodeStatus, checkConnection } = useNode();
+  const { t } = useTranslation();
   
   const [formData, setFormData] = useState<NodeConfig>({
     torGatewayMode: nodeConfig.torGatewayMode || 'onion.ly',
@@ -26,6 +28,7 @@ export function NodeConfigModal(): JSX.Element | null {
   });
 
   const [activeTab, setActiveTab] = useState<'umbrel' | 'elements' | 'tor'>('umbrel');
+  const isDev = import.meta.env.DEV;
 
   if (!isModalOpen) return null;
 
@@ -40,10 +43,26 @@ export function NodeConfigModal(): JSX.Element | null {
       isOpen={isModalOpen}
       onClose={() => setIsModalOpen(false)}
       icon={<Server className="w-5 h-5 text-amber-400" />}
-      title="Configuração do Nó Tor (.onion) & Gateway"
-      subtitle="Ambiente Profissional com suporte a Tor Gateway e credenciais .onion"
+      title={t('nodeConfigTitle')}
+      subtitle={t('nodeConfigSubtitle')}
       maxWidth="2xl"
     >
+      {/* Environment Mode Banner */}
+      <div className={`p-3 rounded-xl mb-4 text-xs font-mono flex items-center justify-between border ${
+        isDev
+          ? 'bg-amber-950/30 border-amber-500/30 text-amber-300'
+          : 'bg-cyan-950/30 border-cyan-500/30 text-cyan-300'
+      }`}>
+        <span>
+          {isDev
+            ? '⚙️ Development Mode: Prioritizing Local / Tor Node'
+            : '🌐 Production Mode: Auto-Routing to 3rd-Party Public APIs (mempool.space & blockstream.info)'}
+        </span>
+        <span className="font-bold uppercase text-[10px] px-2 py-0.5 rounded bg-slate-900 border border-slate-700">
+          {isDev ? 'DEV' : 'PROD'}
+        </span>
+      </div>
+
       {/* Tab Navigation */}
       <div className="flex border-b border-slate-800 -mt-2 mb-6">
         <button
@@ -55,7 +74,7 @@ export function NodeConfigModal(): JSX.Element | null {
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
-          <Globe className="w-4 h-4" /> BitcoinExplorer (.onion)
+          <Globe className="w-4 h-4" /> {t('tabBitcoinExplorer')}
         </button>
         <button
           type="button"
@@ -66,7 +85,7 @@ export function NodeConfigModal(): JSX.Element | null {
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
-          <Shield className="w-4 h-4" /> Elements Core RPC (Liquid)
+          <Shield className="w-4 h-4" /> {t('tabElementsRpc')}
         </button>
         <button
           type="button"
@@ -77,7 +96,7 @@ export function NodeConfigModal(): JSX.Element | null {
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
-          🧅 Tor Gateway Resolver
+          {t('tabTorGateway')}
         </button>
       </div>
 
@@ -91,32 +110,32 @@ export function NodeConfigModal(): JSX.Element | null {
             {nodeStatus === 'checking' && <RefreshCw className="w-5 h-5 text-cyan-400 animate-spin" />}
 
             <div>
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Status Atual:</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('currentStatus')}</span>
               <p className="text-sm font-bold text-white">
-                {nodeStatus === 'connected_umbrel' && 'Conectado ao Nó Próprio (.onion API)'}
-                {nodeStatus === 'connected_public' && 'Conectado às APIs Públicas (Fallback)'}
-                {nodeStatus === 'error' && 'Erro de Conexão com o Endpoint'}
-                {nodeStatus === 'checking' && 'Verificando conectividade...'}
+                {nodeStatus === 'connected_umbrel' && t('statusUmbrel')}
+                {nodeStatus === 'connected_public' && t('statusPublic')}
+                {nodeStatus === 'error' && t('statusError')}
+                {nodeStatus === 'checking' && t('statusChecking')}
               </p>
             </div>
           </div>
 
           <Button type="button" variant="ghost" size="sm" onClick={checkConnection}>
-            Testar Conexão
+            {t('testConnection')}
           </Button>
         </div>
 
         {activeTab === 'umbrel' && (
           <div className="space-y-4">
             <Input
-              label="URL/Host da API BitcoinExplorer (.onion ou Local)"
+              label={t('umbrelInputLabel')}
               value={formData.umbrelApiUrl}
               onChange={(e) => setFormData({ ...formData, umbrelApiUrl: e.target.value })}
               placeholder="http://umbrel.local:3002/api"
             />
 
             <Input
-              label="Fallback Público (Mempool.space API)"
+              label={t('publicFallbackLabel')}
               value={formData.btcPublicApi}
               onChange={(e) => setFormData({ ...formData, btcPublicApi: e.target.value })}
             />
@@ -126,13 +145,13 @@ export function NodeConfigModal(): JSX.Element | null {
         {activeTab === 'elements' && (
           <div className="space-y-4">
             <div className="p-3 bg-cyan-950/40 border border-cyan-800/40 rounded-xl text-xs text-cyan-200">
-              <span className="font-bold">Credenciais salvas do nó Elements Core (.onion):</span>
-              <p className="mt-1 text-[11px] text-cyan-300/80">Comunicação direta com o nó Liquid RPC fornecido pelo usuário.</p>
+              <span className="font-bold">{t('elementsSavedTitle')}</span>
+              <p className="mt-1 text-[11px] text-cyan-300/80">{t('elementsSavedDesc')}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <Input
-                label="Host RPC (.onion)"
+                label={t('rpcHostLabel')}
                 value={formData.elementsNode.rpcHost}
                 onChange={(e) =>
                   setFormData({
@@ -142,7 +161,7 @@ export function NodeConfigModal(): JSX.Element | null {
                 }
               />
               <Input
-                label="Porta RPC"
+                label={t('rpcPortLabel')}
                 type="number"
                 value={formData.elementsNode.rpcPort}
                 onChange={(e) =>
@@ -156,7 +175,7 @@ export function NodeConfigModal(): JSX.Element | null {
 
             <div className="grid grid-cols-2 gap-4">
               <Input
-                label="RPC Username"
+                label={t('rpcUserLabel')}
                 value={formData.elementsNode.rpcUser}
                 onChange={(e) =>
                   setFormData({
@@ -166,7 +185,7 @@ export function NodeConfigModal(): JSX.Element | null {
                 }
               />
               <Input
-                label="RPC Password"
+                label={t('rpcPassLabel')}
                 type="password"
                 value={formData.elementsNode.rpcPass}
                 onChange={(e) =>
@@ -183,12 +202,12 @@ export function NodeConfigModal(): JSX.Element | null {
         {activeTab === 'tor' && (
           <div className="space-y-4">
             <div className="p-3 bg-purple-950/40 border border-purple-800/40 rounded-xl text-xs text-purple-200">
-              <span className="font-bold">Modo de Resolução Tor Gateway (.onion):</span>
-              <p className="mt-1 text-[11px] text-purple-300/80">Permite que o navegador web resolva domínios `.onion` nativamente sem necessidade de plugin adicional.</p>
+              <span className="font-bold">{t('torResolverTitle')}</span>
+              <p className="mt-1 text-[11px] text-purple-300/80">{t('torResolverDesc')}</p>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-2">Selecione o Resolver Tor:</label>
+              <label className="block text-xs font-medium text-slate-300 mb-2">{t('selectTorResolver')}</label>
               <div className="grid grid-cols-3 gap-3">
                 {[
                   { id: 'onion.ly', name: 'Onion.ly Gateway' },
@@ -216,10 +235,10 @@ export function NodeConfigModal(): JSX.Element | null {
         {/* Footer Buttons */}
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
           <Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)}>
-            Cancelar
+            {t('cancel')}
           </Button>
           <Button type="submit" variant="primary">
-            Salvar Configurações TS
+            {t('saveConfigBtn')}
           </Button>
         </div>
       </form>

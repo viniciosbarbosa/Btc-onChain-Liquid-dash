@@ -3,12 +3,14 @@ import { explorerService } from '../services/explorerService';
 import { AddressData } from '../types';
 import { formatSatsToBTC, truncateHash } from '../utils/formatters';
 import { ArrowDownRight, ArrowUpRight, Copy } from 'lucide-react';
+import { useTranslation } from '../context/LanguageContext';
 
 interface AddressViewProps {
   address: string;
 }
 
 export function AddressView({ address }: AddressViewProps): JSX.Element | null {
+  const { t } = useTranslation();
   const [addrData, setAddrData] = useState<AddressData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [copied, setCopied] = useState<boolean>(false);
@@ -76,7 +78,7 @@ export function AddressView({ address }: AddressViewProps): JSX.Element | null {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Endereço Bitcoin/Liquid</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('addressDetailsTitle')}</span>
               <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
                 {addrType}
               </span>
@@ -93,7 +95,7 @@ export function AddressView({ address }: AddressViewProps): JSX.Element | null {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
           <div className="p-4 bg-gradient-to-br from-amber-500/10 via-slate-950 to-slate-950 rounded-xl border border-amber-500/20">
-            <span className="text-xs text-slate-400 font-medium">Saldo Confirmado</span>
+            <span className="text-xs text-slate-400 font-medium">{t('balanceLabel')}</span>
             <div className="text-2xl font-extrabold font-mono text-amber-400 mt-1">
               {formatSatsToBTC(balanceSat)} <span className="text-xs font-normal">BTC</span>
             </div>
@@ -101,27 +103,27 @@ export function AddressView({ address }: AddressViewProps): JSX.Element | null {
           </div>
 
           <div className="p-4 bg-slate-950/60 rounded-xl border border-slate-800/80">
-            <span className="text-xs text-slate-400 font-medium">Total Recebido</span>
+            <span className="text-xs text-slate-400 font-medium">{t('totalReceivedLabel')}</span>
             <div className="text-lg font-bold font-mono text-emerald-400 mt-1 flex items-center gap-1">
               <ArrowDownRight className="w-4 h-4" /> {formatSatsToBTC(fundedSat)} BTC
             </div>
             <div className="text-[11px] text-slate-400 font-mono mt-1">
-              {addrData.chain_stats?.funded_txo_count || 0} UTXOs recebidas
+              {addrData.chain_stats?.funded_txo_count || 0} UTXOs
             </div>
           </div>
 
           <div className="p-4 bg-slate-950/60 rounded-xl border border-slate-800/80">
-            <span className="text-xs text-slate-400 font-medium">Total Enviado</span>
+            <span className="text-xs text-slate-400 font-medium">{t('totalSentLabel')}</span>
             <div className="text-lg font-bold font-mono text-rose-400 mt-1 flex items-center gap-1">
               <ArrowUpRight className="w-4 h-4" /> {formatSatsToBTC(spentSat)} BTC
             </div>
             <div className="text-[11px] text-slate-400 font-mono mt-1">
-              {addrData.chain_stats?.spent_txo_count || 0} UTXOs gastas
+              {addrData.chain_stats?.spent_txo_count || 0} UTXOs
             </div>
           </div>
 
           <div className="p-4 bg-slate-950/60 rounded-xl border border-slate-800/80">
-            <span className="text-xs text-slate-400 font-medium">Total de Transações</span>
+            <span className="text-xs text-slate-400 font-medium">{t('txCountLabel')}</span>
             <div className="text-2xl font-extrabold font-mono text-white mt-1">
               {txCount}
             </div>

@@ -6,8 +6,10 @@ import { LiquidMempoolVisualizer } from './LiquidMempoolVisualizer';
 import { LiquidBlock, LiquidStats } from '../types';
 import { formatTimeAgo } from '../utils/formatters';
 import { Droplet, Layers, Activity, ArrowDownRight, ArrowUpRight, Lock, Search } from 'lucide-react';
+import { useTranslation } from '../context/LanguageContext';
 
 export function LiquidDashboard(): JSX.Element {
+  const { t } = useTranslation();
   const { handleSearch } = useNetwork();
   const [stats, setStats] = useState<LiquidStats | null>(null);
   const [blocks, setBlocks] = useState<LiquidBlock[]>([]);
@@ -68,13 +70,13 @@ export function LiquidDashboard(): JSX.Element {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 rounded-full text-xs font-bold font-mono mb-3">
-              <Droplet className="w-3.5 h-3.5" /> LIQUID NETWORK SIDECHAIN (.ONION CORE)
+              <Droplet className="w-3.5 h-3.5" /> {t('liquidTitle')}
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
               Liquid Network & Elements Core
             </h2>
             <p className="text-sm text-cyan-200/80 mt-1 max-w-2xl">
-              Sidechain do Bitcoin para liquidação instantânea, transações confidenciais e emissão de ativos digitais.
+              {t('liquidSubtitle')}
             </p>
           </div>
 
@@ -99,7 +101,7 @@ export function LiquidDashboard(): JSX.Element {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
-          <span className="text-xs text-slate-400 font-medium">Supply Circulante L-BTC</span>
+          <span className="text-xs text-slate-400 font-medium">{t('lbtcCirculatingLabel')}</span>
           <div className="text-2xl font-extrabold text-cyan-400 font-mono mt-1">
             {stats?.circulatingLbtc || '3,654.82'} <span className="text-xs font-normal">L-BTC</span>
           </div>
@@ -109,7 +111,7 @@ export function LiquidDashboard(): JSX.Element {
         </div>
 
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
-          <span className="text-xs text-slate-400 font-medium">Volume 24h Peg-In</span>
+          <span className="text-xs text-slate-400 font-medium">{t('pegin24hLabel')}</span>
           <div className="text-2xl font-extrabold text-emerald-400 font-mono mt-1 flex items-center gap-1">
             <ArrowDownRight className="w-5 h-5" /> +{stats?.pegin24h || 18.45} <span className="text-xs font-normal">BTC</span>
           </div>
@@ -119,7 +121,7 @@ export function LiquidDashboard(): JSX.Element {
         </div>
 
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
-          <span className="text-xs text-slate-400 font-medium">Volume 24h Peg-Out</span>
+          <span className="text-xs text-slate-400 font-medium">{t('pegout24hLabel')}</span>
           <div className="text-2xl font-extrabold text-rose-400 font-mono mt-1 flex items-center gap-1">
             <ArrowUpRight className="w-5 h-5" /> -{stats?.pegout24h || 12.10} <span className="text-xs font-normal">BTC</span>
           </div>
@@ -129,7 +131,7 @@ export function LiquidDashboard(): JSX.Element {
         </div>
 
         <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
-          <span className="text-xs text-slate-400 font-medium">Transações Confidenciais</span>
+          <span className="text-xs text-slate-400 font-medium">{t('confidentialRatioLabel')}</span>
           <div className="text-2xl font-extrabold text-purple-400 font-mono mt-1 flex items-center gap-1">
             <Lock className="w-5 h-5 text-purple-400" /> {stats?.confidentialTxRatio || 94.2}%
           </div>
@@ -146,7 +148,7 @@ export function LiquidDashboard(): JSX.Element {
       {/* Assets Registry */}
       <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <h3 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-          <Layers className="w-5 h-5 text-cyan-400" /> Ativos em Destaque na Rede Liquid (Clique para pesquisar)
+          <Layers className="w-5 h-5 text-cyan-400" /> Ativos em Destaque na Rede Liquid
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

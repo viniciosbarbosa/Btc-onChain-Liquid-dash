@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { explorerService } from '../services/explorerService';
 import { formatUSD, formatBRL, calculateMoscowTime, formatNumber } from '../utils/formatters';
 import { DollarSign, Flame, Cpu, Clock, Activity } from 'lucide-react';
+import { useTranslation } from '../context/LanguageContext';
 
 interface MetricsState {
   priceUSD: number;
@@ -14,6 +15,7 @@ interface MetricsState {
 }
 
 export function MetricsBar(): JSX.Element {
+  const { t } = useTranslation();
   const [metrics, setMetrics] = useState<MetricsState>({
     priceUSD: 65420,
     priceBRL: 360000,
@@ -76,7 +78,7 @@ export function MetricsBar(): JSX.Element {
       {/* Price & Moscow Time */}
       <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 relative overflow-hidden group hover:border-amber-500/40 transition duration-300">
         <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-1">
-          <span>Preço BTC</span>
+          <span>{t('btcPrice')}</span>
           <DollarSign className="w-4 h-4 text-amber-400" />
         </div>
         <div className="text-xl font-extrabold text-white tracking-tight">
@@ -91,12 +93,12 @@ export function MetricsBar(): JSX.Element {
       {/* Fees (Sat/vB) */}
       <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 relative overflow-hidden group hover:border-amber-500/40 transition duration-300">
         <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-1">
-          <span>Taxas Recomendadas</span>
+          <span>{t('recommendedFees')}</span>
           <Flame className="w-4 h-4 text-orange-400" />
         </div>
         <div className="flex items-baseline gap-2">
           <span className="text-xl font-extrabold text-amber-400">{metrics.fees.fastestFee}</span>
-          <span className="text-xs text-slate-400 font-mono">sat/vB (High)</span>
+          <span className="text-xs text-slate-400 font-mono">sat/vB ({t('highPriority')})</span>
         </div>
         <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-800/60 text-[11px] font-mono text-slate-400">
           <span>Med: {metrics.fees.halfHourFee} sat/vB</span>
@@ -107,29 +109,29 @@ export function MetricsBar(): JSX.Element {
       {/* Mempool Depth */}
       <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 relative overflow-hidden group hover:border-amber-500/40 transition duration-300">
         <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-1">
-          <span>Mempool Pendente</span>
+          <span>{t('mempoolPending')}</span>
           <Activity className="w-4 h-4 text-cyan-400" />
         </div>
         <div className="text-xl font-extrabold text-white tracking-tight">
           {formatNumber(metrics.mempoolCount)}
         </div>
         <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-800/60 text-[11px] font-mono text-slate-400">
-          <span>Tx em Fila</span>
-          <span className="text-emerald-400 font-semibold">Ativa</span>
+          <span>{t('queuedTxs')}</span>
+          <span className="text-emerald-400 font-semibold">{t('activeMempool')}</span>
         </div>
       </div>
 
       {/* Network Hashrate */}
       <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 relative overflow-hidden group hover:border-amber-500/40 transition duration-300">
         <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-1">
-          <span>Hashrate Estimado</span>
+          <span>{t('estimatedHashrate')}</span>
           <Cpu className="w-4 h-4 text-purple-400" />
         </div>
         <div className="text-xl font-extrabold text-white tracking-tight">
           {metrics.hashrate}
         </div>
         <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-800/60 text-[11px] font-mono text-slate-400">
-          <span>Ajuste Dificuldade:</span>
+          <span>{t('diffAdjLabel')}</span>
           <span className="text-emerald-400 font-semibold">{metrics.diffAdj}</span>
         </div>
       </div>
@@ -137,14 +139,14 @@ export function MetricsBar(): JSX.Element {
       {/* Halving Countdown */}
       <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 relative overflow-hidden group hover:border-amber-500/40 transition duration-300 col-span-2 md:col-span-4 lg:col-span-1">
         <div className="flex items-center justify-between text-slate-400 text-xs font-medium mb-1">
-          <span>Próximo Halving</span>
+          <span>{t('nextHalving')}</span>
           <Clock className="w-4 h-4 text-blue-400" />
         </div>
         <div className="text-xl font-extrabold text-white tracking-tight">
           ~2028
         </div>
         <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-800/60 text-[11px] font-mono text-slate-400">
-          <span>Recompensa Bloco:</span>
+          <span>{t('blockRewardLabel')}</span>
           <span className="text-amber-400 font-bold">3.125 BTC</span>
         </div>
       </div>

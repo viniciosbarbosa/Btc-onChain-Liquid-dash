@@ -3,8 +3,10 @@ import { explorerService } from '../services/explorerService';
 import { MempoolFees } from '../types';
 import { formatUSD } from '../utils/formatters';
 import { Calculator } from 'lucide-react';
+import { useTranslation } from '../context/LanguageContext';
 
 export function FeeEstimator(): JSX.Element {
+  const { t } = useTranslation();
   const [feeRates, setFeeRates] = useState<MempoolFees>({
     fastestFee: 18,
     halfHourFee: 12,
@@ -70,8 +72,8 @@ export function FeeEstimator(): JSX.Element {
           <Calculator className="w-5 h-5" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-white">Calculadora Inteligente de Taxas (sat/vB)</h2>
-          <p className="text-xs text-slate-400">Estime o custo exato da transação em satoshis e dólares por prioridade</p>
+          <h2 className="text-xl font-bold text-white">{t('feeEstimatorTitle')}</h2>
+          <p className="text-xs text-slate-400">{t('feeEstimatorSubtitle')}</p>
         </div>
       </div>
 
@@ -88,18 +90,18 @@ export function FeeEstimator(): JSX.Element {
                 { id: 'taproot', label: 'Taproot', sub: 'bc1p...' },
                 { id: 'nested_segwit', label: 'Nested SegWit', sub: '3...' },
                 { id: 'legacy', label: 'Legacy', sub: '1...' }
-              ].map((t) => (
+              ].map((typeItem) => (
                 <button
-                  key={t.id}
-                  onClick={() => setTxType(t.id)}
+                  key={typeItem.id}
+                  onClick={() => setTxType(typeItem.id)}
                   className={`p-3 rounded-xl border text-left transition ${
-                    txType === t.id
+                    txType === typeItem.id
                       ? 'border-amber-400 bg-amber-500/10 text-white font-bold'
                       : 'border-slate-800 bg-slate-950 text-slate-400 hover:border-slate-700'
                   }`}
                 >
-                  <div className="text-xs">{t.label}</div>
-                  <div className="text-[10px] font-mono text-slate-500 mt-0.5">{t.sub}</div>
+                  <div className="text-xs">{typeItem.label}</div>
+                  <div className="text-[10px] font-mono text-slate-500 mt-0.5">{typeItem.sub}</div>
                 </button>
               ))}
             </div>
@@ -107,7 +109,7 @@ export function FeeEstimator(): JSX.Element {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Entradas (UTXOs Inputs)</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1">{t('inputsHeader')}</label>
               <input
                 type="number"
                 min="1"
@@ -118,7 +120,7 @@ export function FeeEstimator(): JSX.Element {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Saídas (Outputs)</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1">{t('outputsHeader')}</label>
               <input
                 type="number"
                 min="1"
@@ -131,7 +133,7 @@ export function FeeEstimator(): JSX.Element {
           </div>
 
           <div className="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-center justify-between font-mono text-xs">
-            <span className="text-slate-400">Tamanho Virtual Estimado:</span>
+            <span className="text-slate-400">{t('txVbytesLabel')}</span>
             <span className="text-amber-400 font-bold text-base">{vSize} vB</span>
           </div>
         </div>
@@ -143,10 +145,10 @@ export function FeeEstimator(): JSX.Element {
           </label>
 
           {[
-            { title: 'Próximo Bloco (~10 min)', rate: feeRates.fastestFee, color: 'border-red-500/40 bg-red-500/5 text-red-400' },
-            { title: 'Alta Prioridade (~30 min)', rate: feeRates.halfHourFee, color: 'border-amber-500/40 bg-amber-500/5 text-amber-400' },
-            { title: 'Média Prioridade (~1 hora)', rate: feeRates.hourFee, color: 'border-cyan-500/40 bg-cyan-500/5 text-cyan-400' },
-            { title: 'Econômica (Relay Mínimo)', rate: feeRates.minimumFee, color: 'border-blue-500/40 bg-blue-500/5 text-blue-400' }
+            { title: t('fastestFeeCard'), rate: feeRates.fastestFee, color: 'border-red-500/40 bg-red-500/5 text-red-400' },
+            { title: t('halfHourFeeCard'), rate: feeRates.halfHourFee, color: 'border-amber-500/40 bg-amber-500/5 text-amber-400' },
+            { title: t('hourFeeCard'), rate: feeRates.hourFee, color: 'border-cyan-500/40 bg-cyan-500/5 text-cyan-400' },
+            { title: t('minimumFeeCard'), rate: feeRates.minimumFee, color: 'border-blue-500/40 bg-blue-500/5 text-blue-400' }
           ].map((target, idx) => {
             const feeSats = calculateFeeSats(target.rate);
             const feeUsd = calculateFeeUSD(feeSats);

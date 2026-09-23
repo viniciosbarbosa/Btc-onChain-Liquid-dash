@@ -6,12 +6,14 @@ import { PendingTxTracer } from './PendingTxTracer';
 import { TxSkeletonLoader } from './SkeletonLoader';
 import { formatSatsToBTC, formatFeeRate, truncateHash } from '../utils/formatters';
 import { CheckCircle, Clock, Copy, Lock } from 'lucide-react';
+import { useTranslation } from '../context/LanguageContext';
 
 interface TransactionViewProps {
   txid: string;
 }
 
 export function TransactionView({ txid }: TransactionViewProps): JSX.Element | null {
+  const { t } = useTranslation();
   const [tx, setTx] = useState<BtcTx | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [copied, setCopied] = useState<boolean>(false);
@@ -129,14 +131,14 @@ export function TransactionView({ txid }: TransactionViewProps): JSX.Element | n
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Transação Bitcoin</span>
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">{t('txDetailsTitle')}</span>
               {tx.status?.confirmed ? (
                 <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center gap-1">
-                  <CheckCircle className="w-3 h-3" /> Confirmada (Bloco #{tx.status.block_height})
+                  <CheckCircle className="w-3 h-3" /> {t('statusConfirmedLabel')} (Bloco #{tx.status.block_height})
                 </span>
               ) : (
                 <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center gap-1">
-                  <Clock className="w-3 h-3" /> Na Mempool (Pendente)
+                  <Clock className="w-3 h-3" /> {t('statusUnconfirmedLabel')}
                 </span>
               )}
             </div>
@@ -153,7 +155,7 @@ export function TransactionView({ txid }: TransactionViewProps): JSX.Element | n
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
           <div className="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
-            <span className="text-xs text-slate-400">Taxa Paga</span>
+            <span className="text-xs text-slate-400">{t('feeLabel')}</span>
             <div className="text-base font-bold font-mono text-amber-400 mt-1">
               {feeSat} <span className="text-xs font-normal">sats</span>
             </div>
@@ -161,7 +163,7 @@ export function TransactionView({ txid }: TransactionViewProps): JSX.Element | n
           </div>
 
           <div className="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
-            <span className="text-xs text-slate-400">Tamanho Virtual</span>
+            <span className="text-xs text-slate-400">{t('vsizeLabel')}</span>
             <div className="text-base font-bold font-mono text-white mt-1">
               {tx.vsize || tx.size} <span className="text-xs font-normal text-slate-400">vB</span>
             </div>
