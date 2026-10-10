@@ -9,6 +9,93 @@
   }
 }
 
+@layer components {
+  /* Centralized Card & Panel Styles */
+  .card-base {
+    @apply bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-2xl backdrop-blur-md transition-all duration-300;
+  }
+  
+  .card-stat {
+    @apply p-4 bg-slate-900/80 border border-slate-800 rounded-2xl transition-all duration-200 hover:border-slate-700/80;
+  }
+  
+  .card-interactive {
+    @apply p-4 rounded-2xl border border-slate-800 bg-slate-950/90 text-left transition-all duration-200 transform hover:-translate-y-1 relative overflow-hidden group;
+  }
+  
+  .card-glass-btc {
+    @apply bg-gradient-to-r from-slate-900 via-slate-900/90 to-amber-950/30 border border-slate-800 rounded-3xl p-5 shadow-xl;
+  }
+  
+  .card-glass-liquid {
+    @apply bg-gradient-to-r from-cyan-950/80 via-slate-900 to-blue-950/80 border border-cyan-800/40 rounded-3xl p-5 shadow-xl;
+  }
+
+  /* Centralized Badges & Status Indicators */
+  .badge-amber {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20;
+  }
+  
+  .badge-cyan {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20;
+  }
+  
+  .badge-emerald {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20;
+  }
+  
+  .badge-purple {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20;
+  }
+  
+  .badge-rose {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20;
+  }
+  
+  .badge-slate {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-slate-800/80 text-slate-300 border border-slate-700/60;
+  }
+
+  /* Centralized Buttons */
+  .btn-primary {
+    @apply px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-black font-extrabold rounded-2xl transition text-xs font-mono shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+  }
+  
+  .btn-cyan-action {
+    @apply px-4 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold rounded-2xl transition text-xs font-mono shadow-lg shadow-cyan-500/10 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+  }
+  
+  .btn-secondary-dark {
+    @apply px-4 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-bold rounded-2xl transition text-xs font-mono active:scale-95;
+  }
+
+  /* Form Elements */
+  .input-dark-custom {
+    @apply w-full p-3.5 bg-slate-950 border border-slate-800 rounded-2xl text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/80 transition-all duration-200;
+  }
+  
+  .select-dark-custom {
+    @apply p-2.5 bg-slate-900 border border-slate-800 rounded-xl text-xs font-mono text-slate-300 focus:outline-none focus:border-amber-500 transition-all duration-200;
+  }
+
+  /* Centralized Typography */
+  .heading-dashboard {
+    @apply text-xl font-extrabold text-white tracking-tight flex items-center gap-3 font-sans;
+  }
+  
+  .subtitle-dashboard {
+    @apply text-xs text-slate-400 mt-0.5 font-mono;
+  }
+  
+  .label-stat {
+    @apply text-xs font-mono text-slate-400 flex items-center gap-1.5;
+  }
+  
+  .value-stat {
+    @apply text-xl font-extrabold font-mono text-white mt-1;
+  }
+}
+
 /* Custom Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;

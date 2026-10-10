@@ -2,17 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { explorerService } from '../services/explorerService';
 import { XpubData, DerivedAddress } from '../types';
 import { formatSatsToBTC, truncateHash } from '../utils/formatters';
-import { Key, Copy } from 'lucide-react';
+import { Key, Copy, QrCode, Star } from 'lucide-react';
+import { useWatchlist } from '../context/WatchlistContext';
+import { QRCodeModal } from './QRCodeModal';
 
 interface XpubViewProps {
   xpub: string;
 }
 
 export function XpubView({ xpub }: XpubViewProps): JSX.Element {
+  const { isBookmarked, toggleBookmark } = useWatchlist();
   const [data, setData] = useState<XpubData | null>(null);
   const [addresses, setAddresses] = useState<DerivedAddress[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [copied, setCopied] = useState<boolean>(false);
+  const [isQrOpen, setIsQrOpen] = useState<boolean>(false);
+
+  const bookmarked = isBookmarked(xpub);
 
   useEffect(() => {
     async function loadXpubInfo() {
@@ -81,8 +87,18 @@ export function XpubView({ xpub }: XpubViewProps): JSX.Element {
             </div>
             <h2 className="text-xs sm:text-sm font-mono font-bold text-white break-all flex items-center gap-2">
               {xpub}
-              <button onClick={copyToClipboard} className="text-slate-400 hover:text-amber-400 transition">
+              <button onClick={copyToClipboard} className="text-slate-400 hover:text-amber-400 transition" title="Copiar XPUB">
                 <Copy className="w-4 h-4" />
+              </button>
+              <button onClick={() => setIsQrOpen(true)} className="text-slate-400 hover:text-amber-400 transition" title="Ver QR Code">
+                <QrCode className="w-4 h-4 text-cyan-400" />
+              </button>
+              <button 
+                onClick={() => toggleBookmark({ id: xpub, type: 'xpub', label: `XPUB ${xpub.slice(0, 8)}...` })} 
+                className="text-slate-400 hover:text-amber-400 transition" 
+                title="Favoritar XPUB"
+              >
+                <Star className={`w-4 h-4 ${bookmarked ? 'fill-amber-400 text-amber-400' : 'text-slate-400'}`} />
               </button>
               {copied && <span className="text-[10px] text-emerald-400 font-mono">Copiado!</span>}
             </h2>
@@ -132,6 +148,14 @@ export function XpubView({ xpub }: XpubViewProps): JSX.Element {
           ))}
         </div>
       </div>
+
+      <QRCodeModal
+        isOpen={isQrOpen}
+        onClose={() => setIsQrOpen(false)}
+        data={xpub}
+        title="QR Code da Chave XPUB"
+        type="xpub"
+      />
     </div>
   );
 }

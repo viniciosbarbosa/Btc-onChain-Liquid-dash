@@ -7,6 +7,10 @@ export default {
   theme: {
     extend: {
       colors: {
+        slate: {
+          925: '#0B0F17',
+          950: '#070A0F',
+        },
         btc: {
           orange: '#F7931A',
           gold: '#FFD700',
@@ -31,7 +35,11 @@ export default {
       },
       boxShadow: {
         'glow-btc': '0 0 20px rgba(247, 147, 26, 0.25)',
-        'glow-liquid': '0 0 20px rgba(0, 242, 254, 0.25)'
+        'glow-liquid': '0 0 20px rgba(0, 242, 254, 0.25)',
+        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+      },
+      borderRadius: {
+        '4xl': '2rem',
       }
     },
   },

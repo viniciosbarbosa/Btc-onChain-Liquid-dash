@@ -197,7 +197,7 @@ export function MempoolVisualizer({ onSelectBlock }: MempoolVisualizerProps): JS
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {pendingBlocks.map((block) => {
               const isSelected = selectedBlock?.id === block.id;
               return (
@@ -213,28 +213,32 @@ export function MempoolVisualizer({ onSelectBlock }: MempoolVisualizerProps): JS
                       : 'border-slate-800 bg-slate-950/90 hover:border-slate-700'
                   }`}
                 >
-                  <div className={`h-2 w-full bg-gradient-to-r ${block.color} rounded-full mb-3 shadow-sm`} />
+                  <div className={`h-2.5 w-full bg-gradient-to-r ${block.color} rounded-full mb-3 shadow-sm`} />
                   
-                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 font-mono">
-                    {block.label}
+                  <div className="flex items-center justify-between mb-1 font-mono">
+                    <span className="text-[11px] font-bold text-slate-300 uppercase tracking-wider">
+                      {block.id === 'pending-1' ? t('blockNum1Label') :
+                       block.id === 'pending-2' ? t('blockNum2Label') :
+                       block.id === 'pending-3' ? t('blockNum3Label') :
+                       block.id === 'pending-4' ? t('blockNum4Label') : block.label}
+                    </span>
+                    <span className="text-xs font-mono text-amber-400 font-extrabold bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">
+                      ~{block.medianFee} sat/vB
+                    </span>
                   </div>
 
-                  <div className="text-lg font-extrabold text-white mb-2 font-mono flex items-baseline gap-1">
-                    ~{block.medianFee} <span className="text-xs font-normal text-amber-400">sat/vB</span>
-                  </div>
-
-                  <div className="space-y-1 text-[11px] font-mono text-slate-400">
-                    <div className="flex justify-between">
-                      <span>Faixa:</span>
-                      <span className="text-slate-200">{block.feeRange}</span>
+                  <div className="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-slate-800/80 text-xs font-mono">
+                    <div>
+                      <span className="text-[10px] text-slate-500 block">{t('rangeLabel')}</span>
+                      <span className="text-slate-200 font-bold">{block.feeRange}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Tx Count:</span>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block">{t('txCountLabelUpper')}</span>
                       <span className="text-amber-400 font-bold">{block.txCount?.toLocaleString()}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Tamanho:</span>
-                      <span>{formatBytes(block.size)}</span>
+                    <div>
+                      <span className="text-[10px] text-slate-500 block">{t('sizeLabelUpper')}</span>
+                      <span className="text-slate-200 font-bold">{formatBytes(block.size)}</span>
                     </div>
                   </div>
                 </button>
@@ -279,15 +283,15 @@ export function MempoolVisualizer({ onSelectBlock }: MempoolVisualizerProps): JS
 
                   <div className="space-y-1 text-[11px] font-mono text-slate-400">
                     <div className="flex justify-between">
-                      <span>Minerado:</span>
+                      <span>{t('minedLabel')}</span>
                       <span className="text-slate-200">{formatTimeAgo(block.minedTime)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Tx Count:</span>
+                      <span>{t('txCountHeader')}:</span>
                       <span className="text-emerald-400 font-bold">{block.txCount?.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Taxa Média:</span>
+                      <span>{t('medianFeeLabel')}</span>
                       <span>{block.medianFee} sat/vB</span>
                     </div>
                   </div>

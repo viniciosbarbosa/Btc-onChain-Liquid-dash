@@ -5,8 +5,10 @@ import { BtcTx } from '../types';
 import { PendingTxTracer } from './PendingTxTracer';
 import { TxSkeletonLoader } from './SkeletonLoader';
 import { formatSatsToBTC, formatFeeRate, truncateHash } from '../utils/formatters';
-import { CheckCircle, Clock, Copy, Lock } from 'lucide-react';
+import { CheckCircle, Clock, Copy, Lock, QrCode, Star } from 'lucide-react';
 import { useTranslation } from '../context/LanguageContext';
+import { useWatchlist } from '../context/WatchlistContext';
+import { QRCodeModal } from './QRCodeModal';
 
 interface TransactionViewProps {
   txid: string;
@@ -14,9 +16,13 @@ interface TransactionViewProps {
 
 export function TransactionView({ txid }: TransactionViewProps): JSX.Element | null {
   const { t } = useTranslation();
+  const { isBookmarked, toggleBookmark } = useWatchlist();
   const [tx, setTx] = useState<BtcTx | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [copied, setCopied] = useState<boolean>(false);
+  const [isQrOpen, setIsQrOpen] = useState<boolean>(false);
+
+  const bookmarked = isBookmarked(txid);
 
   useEffect(() => {
     async function fetchTxDetails() {
@@ -144,8 +150,18 @@ export function TransactionView({ txid }: TransactionViewProps): JSX.Element | n
             </div>
             <h2 className="text-sm sm:text-base font-mono font-bold text-white break-all flex items-center gap-2">
               {tx.txid}
-              <button onClick={copyToClipboard} className="text-slate-400 hover:text-amber-400 transition">
+              <button onClick={copyToClipboard} className="text-slate-400 hover:text-amber-400 transition" title="Copiar TxID">
                 <Copy className="w-4 h-4" />
+              </button>
+              <button onClick={() => setIsQrOpen(true)} className="text-slate-400 hover:text-amber-400 transition" title="Ver QR Code">
+                <QrCode className="w-4 h-4 text-cyan-400" />
+              </button>
+              <button 
+                onClick={() => toggleBookmark({ id: tx.txid, type: 'tx', label: `Tx ${tx.txid.slice(0, 8)}...` })} 
+                className="text-slate-400 hover:text-amber-400 transition" 
+                title="Favoritar Transação"
+              >
+                <Star className={`w-4 h-4 ${bookmarked ? 'fill-amber-400 text-amber-400' : 'text-slate-400'}`} />
               </button>
               {copied && <span className="text-[10px] text-emerald-400 font-mono">Copiado!</span>}
             </h2>
@@ -258,6 +274,14 @@ export function TransactionView({ txid }: TransactionViewProps): JSX.Element | n
 
       {/* TRANSACTION DEPENDENCY TRACER GRAPH (1 -> 2 -> 3) */}
       <PendingTxTracer initialTxid={txid} networkType="btc" />
+
+      <QRCodeModal
+        isOpen={isQrOpen}
+        onClose={() => setIsQrOpen(false)}
+        data={txid}
+        title="QR Code do TxID"
+        type="tx"
+      />
     </div>
   );
 }

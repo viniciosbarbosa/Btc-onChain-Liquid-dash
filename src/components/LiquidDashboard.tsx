@@ -3,6 +3,7 @@ import { liquidService } from '../services/liquidService';
 import { useNetwork } from '../context/NetworkContext';
 import { SearchBar } from './SearchBar';
 import { LiquidMempoolVisualizer } from './LiquidMempoolVisualizer';
+import { LiquidCharts } from './LiquidCharts';
 import { LiquidBlock, LiquidStats } from '../types';
 import { formatTimeAgo } from '../utils/formatters';
 import { Droplet, Layers, Activity, ArrowDownRight, ArrowUpRight, Lock, Search } from 'lucide-react';
@@ -97,6 +98,9 @@ export function LiquidDashboard(): JSX.Element {
         </div>
       </div>
 
+      {/* LIQUID SIDECHAIN MEMPOOL STREAM */}
+      <LiquidMempoolVisualizer />
+
       {/* Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         
@@ -106,7 +110,7 @@ export function LiquidDashboard(): JSX.Element {
             {stats?.circulatingLbtc || '3,654.82'} <span className="text-xs font-normal">L-BTC</span>
           </div>
           <div className="text-[11px] text-slate-400 mt-2 pt-2 border-t border-slate-800">
-            100% Lastreado por BTC em Federação
+            {t('lbtcBackedLabel')}
           </div>
         </div>
 
@@ -136,19 +140,19 @@ export function LiquidDashboard(): JSX.Element {
             <Lock className="w-5 h-5 text-purple-400" /> {stats?.confidentialTxRatio || 94.2}%
           </div>
           <div className="text-[11px] text-slate-400 mt-2 pt-2 border-t border-slate-800">
-            Valores e Ativos Ocultos
+            {t('confidentialValuesHidden')}
           </div>
         </div>
 
       </div>
 
-      {/* LIQUID SIDECHAIN MEMPOOL STREAM */}
-      <LiquidMempoolVisualizer />
+      {/* LIQUID CHARTS & ANALYTICS DASHBOARD */}
+      <LiquidCharts />
 
       {/* Assets Registry */}
       <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <h3 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-          <Layers className="w-5 h-5 text-cyan-400" /> Ativos em Destaque na Rede Liquid
+          <Layers className="w-5 h-5 text-cyan-400" /> {t('featuredLiquidAssets')}
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -179,7 +183,7 @@ export function LiquidDashboard(): JSX.Element {
       {/* Liquid Block Stream */}
       <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <h3 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-          <Activity className="w-5 h-5 text-blue-400" /> Blocos Recentes da Rede Liquid (~1 min block time)
+          <Activity className="w-5 h-5 text-blue-400" /> {t('recentLiquidBlocks')}
         </h3>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">

@@ -3,6 +3,9 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useNetwork } from '../context/NetworkContext';
 import { useNode } from '../context/NodeContext';
 import { BroadcastTxModal } from './BroadcastTxModal';
+import { WatchlistModal } from './WatchlistModal';
+import { SatsConverterModal } from './SatsConverterModal';
+import { PSBTDecoderModal } from './PSBTDecoderModal';
 import { 
   Boxes, 
   Calculator, 
@@ -11,7 +14,9 @@ import {
   Zap, 
   Droplet,
   Compass,
-  Radio
+  Radio,
+  Star,
+  FileCode
 } from 'lucide-react';
 
 import { useTranslation } from '../context/LanguageContext';
@@ -22,6 +27,9 @@ export function Navbar(): JSX.Element {
   const { language, toggleLanguage, t } = useTranslation();
   const [inputVal, setInputVal] = useState<string>('');
   const [isBroadcastOpen, setIsBroadcastOpen] = useState<boolean>(false);
+  const [isWatchlistOpen, setIsWatchlistOpen] = useState<boolean>(false);
+  const [isConverterOpen, setIsConverterOpen] = useState<boolean>(false);
+  const [isPsbtOpen, setIsPsbtOpen] = useState<boolean>(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -109,6 +117,34 @@ export function Navbar(): JSX.Element {
 
           {/* Actions & Language Switcher */}
           <div className="flex items-center gap-2">
+
+            {/* Watchlist Star Button */}
+            <button
+              onClick={() => setIsWatchlistOpen(true)}
+              className="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/40 text-amber-400 rounded-xl transition"
+              title={t('watchlistTitle')}
+            >
+              <Star className="w-4 h-4 fill-amber-400/20" />
+            </button>
+
+            {/* Converter Calculator Button */}
+            <button
+              onClick={() => setIsConverterOpen(true)}
+              className="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/40 text-slate-300 hover:text-white rounded-xl transition"
+              title={t('satsConverterTitle')}
+            >
+              <Calculator className="w-4 h-4 text-amber-400" />
+            </button>
+
+            {/* PSBT Decoder Button */}
+            <button
+              onClick={() => setIsPsbtOpen(true)}
+              className="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/40 text-slate-300 hover:text-white rounded-xl transition hidden sm:flex"
+              title={t('psbtDecoderTitle')}
+            >
+              <FileCode className="w-4 h-4 text-cyan-400" />
+            </button>
+
             {/* Language Switcher Button */}
             <button
               onClick={toggleLanguage}
@@ -151,6 +187,22 @@ export function Navbar(): JSX.Element {
         isOpen={isBroadcastOpen}
         onClose={() => setIsBroadcastOpen(false)}
       />
+
+      <WatchlistModal
+        isOpen={isWatchlistOpen}
+        onClose={() => setIsWatchlistOpen(false)}
+      />
+
+      <SatsConverterModal
+        isOpen={isConverterOpen}
+        onClose={() => setIsConverterOpen(false)}
+      />
+
+      <PSBTDecoderModal
+        isOpen={isPsbtOpen}
+        onClose={() => setIsPsbtOpen(false)}
+      />
     </header>
   );
 }
+

@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { explorerService } from '../services/explorerService';
 import { AddressData } from '../types';
 import { formatSatsToBTC, truncateHash } from '../utils/formatters';
-import { ArrowDownRight, ArrowUpRight, Copy } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, Copy, QrCode, Star } from 'lucide-react';
 import { useTranslation } from '../context/LanguageContext';
+import { useWatchlist } from '../context/WatchlistContext';
+import { QRCodeModal } from './QRCodeModal';
 
 interface AddressViewProps {
   address: string;
@@ -11,9 +13,13 @@ interface AddressViewProps {
 
 export function AddressView({ address }: AddressViewProps): JSX.Element | null {
   const { t } = useTranslation();
+  const { isBookmarked, toggleBookmark } = useWatchlist();
   const [addrData, setAddrData] = useState<AddressData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [copied, setCopied] = useState<boolean>(false);
+  const [isQrOpen, setIsQrOpen] = useState<boolean>(false);
+
+  const bookmarked = isBookmarked(address);
 
   useEffect(() => {
     async function loadAddressInfo() {
@@ -85,8 +91,18 @@ export function AddressView({ address }: AddressViewProps): JSX.Element | null {
             </div>
             <h2 className="text-sm sm:text-base font-mono font-bold text-white break-all flex items-center gap-2">
               {address}
-              <button onClick={copyToClipboard} className="text-slate-400 hover:text-amber-400 transition">
+              <button onClick={copyToClipboard} className="text-slate-400 hover:text-amber-400 transition" title="Copiar Endereço">
                 <Copy className="w-4 h-4" />
+              </button>
+              <button onClick={() => setIsQrOpen(true)} className="text-slate-400 hover:text-amber-400 transition" title="Ver QR Code">
+                <QrCode className="w-4 h-4 text-cyan-400" />
+              </button>
+              <button 
+                onClick={() => toggleBookmark({ id: address, type: 'address', label: `Endereço ${address.slice(0, 8)}...` })} 
+                className="text-slate-400 hover:text-amber-400 transition" 
+                title="Favoritar Endereço"
+              >
+                <Star className={`w-4 h-4 ${bookmarked ? 'fill-amber-400 text-amber-400' : 'text-slate-400'}`} />
               </button>
               {copied && <span className="text-[10px] text-emerald-400 font-mono">Copiado!</span>}
             </h2>
@@ -131,6 +147,15 @@ export function AddressView({ address }: AddressViewProps): JSX.Element | null {
           </div>
         </div>
       </div>
+
+      <QRCodeModal
+        isOpen={isQrOpen}
+        onClose={() => setIsQrOpen(false)}
+        data={address}
+        title="QR Code do Endereço"
+        type="address"
+      />
     </div>
   );
 }
+

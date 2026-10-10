@@ -42,7 +42,8 @@ Dashboard moderno, profissional e de alta performance para exploração de **Bit
 
 - **Core**: React 18, TypeScript, Vite.
 - **Roteamento**: React Router DOM v7.
-- **Estilização**: Tailwind CSS, Vanilla CSS, Lucide React (Ícones).
+- **Estilização & Design System**: Tailwind CSS, CSS Puro e uma arquitetura centralizada (`@layer components`) em `src/index.css` para manutenção fácil de tokens (Classes utilitárias próprias como `.card-base`, `.btn-primary`, `.badge-amber`).
+- **Gráficos e Analytics**: Recharts para painéis analíticos On-Chain, Halving e Dificuldade.
 - **HTTP Client**: Axios com roteador customizado para ambiente dev/prod e gateways Tor.
 
 ---
